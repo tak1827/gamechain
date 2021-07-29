@@ -1,0 +1,12 @@
+syntax = "proto3";
+package tak1827.gamechain.gamechain;
+
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/tak1827/gamechain/x/gamechain/types";
+
+// GenesisState defines the gamechain module's genesis state.
+message GenesisState {
+    // this line is used by starport scaffolding # genesis/proto/state
+    // this line is used by starport scaffolding # ibc/genesis/proto
+}
