@@ -56,3 +56,9 @@ curl https://get.starport.network/tak1827/gamechain@latest! | sudo bash
 - [Cosmos SDK documentation](https://docs.cosmos.network)
 - [Cosmos SDK Tutorials](https://tutorials.cosmos.network)
 - [Discord](https://discord.gg/W8trcGV)
+
+# Note
+
+wasmd query wasm --help
+gamechaind query gamechain --help
+
