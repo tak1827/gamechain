@@ -2,3 +2,5 @@ vue/node_modules
 vue/dist
 release/
 .DS_Store
+.chaindata
+.artifacts

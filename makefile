@@ -2,7 +2,7 @@ build:
 	starport chain build
 
 run:
-	gamechaind start --pruning nothing --grpc.address :9090 --home ./.chaindata --log_level warn
+	gamechaind start --pruning nothing --grpc.address 127.0.0.1:9090 --home ./.chaindata --log_level warn
 
 init:
 	rm -rf ./.chaindata/
