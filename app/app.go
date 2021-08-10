@@ -1,6 +1,7 @@
 package app
 
 import (
+	"encoding/json"
 	"io"
 	"net/http"
 	"os"
@@ -92,6 +93,11 @@ import (
 	"github.com/tendermint/spm-extras/wasmcmd"
 
 	"github.com/tendermint/spm/cosmoscmd"
+
+	// wasmvm "github.com/CosmWasm/wasmvm"
+	// wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	"github.com/davecgh/go-spew/spew"
 )
 
 const (
@@ -370,6 +376,21 @@ func New(
 		panic("error while reading wasm config: " + err.Error())
 	}
 
+	customEncoder := wasmkeeper.DefaultEncoders(appCodec, app.TransferKeeper)
+	customEncoder.Custom = EncodeCustomMsg
+
+	wasmMessageHandler := wasmkeeper.NewDefaultMessageHandler(
+		app.Router(),
+		app.IBCKeeper.ChannelKeeper,
+		scopedWasmKeeper,
+		app.BankKeeper,
+		appCodec,
+		app.TransferKeeper,
+		&customEncoder,
+	)
+
+	opt := wasmkeeper.WithMessageHandler(wasmMessageHandler)
+
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
 	supportedFeatures := "staking"
@@ -390,6 +411,7 @@ func New(
 		wasmDir,
 		wasmConfig,
 		supportedFeatures,
+		opt,
 	)
 
 	// The gov proposal types can be individually enabled
@@ -663,4 +685,9 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 	paramsKeeper.Subspace(gamechainmoduletypes.ModuleName)
 
 	return paramsKeeper
+}
+
+func EncodeCustomMsg(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
+	spew.Dump(msg)
+	return []sdk.Msg{}, nil
 }

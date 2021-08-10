@@ -84,7 +84,7 @@ export CODE_ID=$(echo $RES | jq -r '.logs[0].events[0].attributes[-1].value')
 gamechaind query wasm list-contract-by-code $CODE_ID $NODE --output json
 
 // init
-INIT=$(jq -n --arg main $(gamechaind keys show -a main --home ${APP_HOME}) --arg validator $(gamechaind keys show -a validator --home ${APP_HOME}) '{"arbiter":$main,"recipient":$validator}')
+export INIT=$(jq -n --arg main $(gamechaind keys show -a main --home ${APP_HOME}) --arg validator $(gamechaind keys show -a validator --home ${APP_HOME}) '{"arbiter":$main,"recipient":$validator}')
 gamechaind tx wasm instantiate $CODE_ID "$INIT" \
     --from main --amount=50000ucosm  --label "escrow 1" $TXFLAG -y --home ${APP_HOME}
 gamechaind query wasm list-contract-by-code $CODE_ID $NODE --output json
