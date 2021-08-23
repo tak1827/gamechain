@@ -97,6 +97,7 @@ import (
 	// wasmvm "github.com/CosmWasm/wasmvm"
 	// wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	"github.com/davecgh/go-spew/spew"
 )
 
@@ -391,6 +392,20 @@ func New(
 
 	opt := wasmkeeper.WithMessageHandler(wasmMessageHandler)
 
+
+	wasmVMQueryHandler := wasmkeeper.DefaultQueryPlugins(
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.DistrKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		app.GRPCQueryRouter(),
+		app.wasmKeeper,
+	)
+
+	wasmVMQueryHandler.Custom = CustomQuerier(&app.GamechainKeeper)
+
+	qOpt := wasmkeeper.WithQueryHandler(wasmVMQueryHandler)
+
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
 	supportedFeatures := "staking"
@@ -412,6 +427,7 @@ func New(
 		wasmConfig,
 		supportedFeatures,
 		opt,
+		qOpt,
 	)
 
 	// The gov proposal types can be individually enabled
@@ -690,4 +706,22 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 func EncodeCustomMsg(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 	spew.Dump(msg)
 	return []sdk.Msg{}, nil
+}
+
+type Nft struct {
+	Nfts []gamechainmoduletypes.BaseNft `json:"nfts"`
+}
+
+
+func CustomQuerier(gamechainKeeper *gamechainmodulekeeper.Keeper) func(ctx sdk.Context, request json.RawMessage) ([]byte, error) {
+	return func(ctx sdk.Context, request json.RawMessage) ([]byte, error) {
+		spew.Dump("CustomQuerier pass!", request)
+
+		res := gamechainKeeper.GetAllBaseNft(ctx)
+		n := Nft{
+			Nfts: res,
+		}
+		spew.Dump("result!", n)
+		return json.Marshal(n)
+	}
 }

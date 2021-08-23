@@ -2,12 +2,45 @@ syntax = "proto3";
 package tak1827.gamechain.gamechain;
 
 // this line is used by starport scaffolding # proto/tx/import
+import "gamechain/base_nft.proto";
 
 option go_package = "github.com/tak1827/gamechain/x/gamechain/types";
 
 // Msg defines the Msg service.
 service Msg {
     // this line is used by starport scaffolding # proto/tx/rpc
+  rpc CreateBaseNft(MsgCreateBaseNft) returns (MsgCreateBaseNftResponse);
+  rpc UpdateBaseNft(MsgUpdateBaseNft) returns (MsgUpdateBaseNftResponse);
+  rpc DeleteBaseNft(MsgDeleteBaseNft) returns (MsgDeleteBaseNftResponse);
 }
 
 // this line is used by starport scaffolding # proto/tx/message
+message MsgCreateBaseNft {
+  string creator = 1;
+  string name = 2;
+  string symbol = 3;
+  string supply = 4;
+  string baseuri = 5;
+}
+
+message MsgCreateBaseNftResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdateBaseNft {
+  string creator = 1;
+  uint64 id = 2;
+  string name = 3;
+  string symbol = 4;
+  string supply = 5;
+  string baseuri = 6;
+}
+
+message MsgUpdateBaseNftResponse { }
+
+message MsgDeleteBaseNft {
+  string creator = 1;
+  uint64 id = 2;
+}
+
+message MsgDeleteBaseNftResponse { }

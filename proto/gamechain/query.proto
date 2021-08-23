@@ -4,12 +4,40 @@ package tak1827.gamechain.gamechain;
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 // this line is used by starport scaffolding # 1
+import "gamechain/base_nft.proto";
 
 option go_package = "github.com/tak1827/gamechain/x/gamechain/types";
 
 // Query defines the gRPC querier service.
 service Query {
     // this line is used by starport scaffolding # 2
+
+	// Queries a baseNft by id.
+	rpc BaseNft(QueryGetBaseNftRequest) returns (QueryGetBaseNftResponse) {
+		option (google.api.http).get = "/tak1827/gamechain/gamechain/baseNft/{id}";
+	}
+
+	// Queries a list of baseNft items.
+	rpc BaseNftAll(QueryAllBaseNftRequest) returns (QueryAllBaseNftResponse) {
+		option (google.api.http).get = "/tak1827/gamechain/gamechain/baseNft";
+	}
+
 }
 
 // this line is used by starport scaffolding # 3
+message QueryGetBaseNftRequest {
+	uint64 id = 1;
+}
+
+message QueryGetBaseNftResponse {
+	BaseNft BaseNft = 1;
+}
+
+message QueryAllBaseNftRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllBaseNftResponse {
+	repeated BaseNft BaseNft = 1;
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}

@@ -1,0 +1,17 @@
+syntax = "proto3";
+package tak1827.gamechain.gamechain;
+
+option go_package = "github.com/tak1827/gamechain/x/gamechain/types";
+
+import "gogoproto/gogo.proto";
+
+message BaseNft {
+  option (gogoproto.equal) = true;
+
+  string creator = 1;
+  uint64 id = 2;
+  string name = 3;
+  string symbol = 4;
+  string supply = 5;
+  string baseuri = 6;
+}

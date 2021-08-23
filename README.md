@@ -67,7 +67,7 @@ export NODE=(--node $RPC)
 export TXFLAG=($NODE --chain-id $CHAIN_ID --gas-prices 0.001ucosm --gas auto --gas-adjustment 1.3)
 
 // init
-gamechaind init localnet --chain-id ${CHAIN_ID} --home ${APP_HOME}
+rm -r ./.chaindata & gamechaind init localnet --chain-id ${CHAIN_ID} --home ${APP_HOME}
 gamechaind keys add main $KEYRING --home ./.chaindata
 gamechaind keys add validator $KEYRING --home ./.chaindata
 gamechaind add-genesis-account main 10000000000ucosm,10000000000stake --home ${APP_HOME}
@@ -106,3 +106,8 @@ gamechaind query bank balances $CONTRACT $NODE
 wasmd query wasm --help
 gamechaind query gamechain --help
 
+// create nft
+gamechaind tx gamechain create-base-nft --from main --chain-id $CHAIN_ID --home ${APP_HOME} "nftname" "nftsymbol" "nftsupply" "nftbaseuri"
+
+// list nft
+gamechaind query gamechain list-base-nft
